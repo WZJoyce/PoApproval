@@ -24,3 +24,9 @@ tests/
 └── PoApproval.Api.Tests/       # Integration tests via WebApplicationFactory
 ```
 
+## Run locally
+```bash
+dotnet build
+cd src/PoApproval.Api
+dotnet run
+```
