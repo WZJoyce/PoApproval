@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PoApproval.Api/PoApproval.Api.csproj" />
+    <Project Path="src/PoApproval.Domain/PoApproval.Domain.csproj" />
+    <Project Path="src/PoApproval.Infrastructure/PoApproval.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PoApproval.Api.Tests/PoApproval.Api.Tests.csproj" />
+    <Project Path="tests/PoApproval.Domain.Tests/PoApproval.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
