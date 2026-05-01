@@ -1,14 +1,18 @@
+using PoApproval.Domain.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<IClock, SystemClock>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline. Middleware should be added in the order they are expected to execute. For example, UseAuthentication should be added before UseAuthorization.
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
