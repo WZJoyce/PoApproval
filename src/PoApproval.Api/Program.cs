@@ -1,4 +1,4 @@
-using PoApproval.Domain.Services;
+using PoApproval.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +8,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<IClock, SystemClock>();
+builder.Services.AddDomainServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -25,6 +25,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
 
 public partial class Program { }
