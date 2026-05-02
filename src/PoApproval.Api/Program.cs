@@ -3,12 +3,10 @@ using PoApproval.Api.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-
 builder.Services.AddOpenApi();
-
 builder.Services.AddDomainServices(builder.Configuration);
+builder.Services.AddApiVersioningServices();
 
 var app = builder.Build();
 
@@ -19,11 +17,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+public partial class Program;

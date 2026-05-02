@@ -14,30 +14,33 @@ public class SmokeTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task WeatherForecast_Returns200_AndJsonArray()
-    {
-        // Arrange
-        var client = _factory.CreateClient();
-
-        // Act
-        var response = await client.GetAsync("/weatherforecast");// Call the /weatherforecast endpoint
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);// Check if the status code is 200 OK
-        response.Content.Headers.ContentType?.MediaType
-            .Should().Be("application/json");// Check if the content type is application/json
-
-        var body = await response.Content.ReadAsStringAsync();
-        body.Should().StartWith("[");  // JSON Array starts with '['
-    }
-
-    [Fact]
-    public async Task UnknownPath_Returns404()
+    public async Task UnknownPath_ReturnsNotFound()
     {
         var client = _factory.CreateClient();
 
-        var response = await client.GetAsync("/this-route-does-not-exist");
+        var response = await client.GetAsync("/api/v1/unknown-path");
 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
+    [Fact]
+    public async Task OrdersEndpoint_ReturnsNotImplemented()
+    {
+        var client = _factory.CreateClient();           
+
+        var response = await client.GetAsync("/api/v1/orders");                     
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotImplemented);
+    }
+    
+    [Fact]
+    public async Task GetOrderbyId_WithInvalidIdContraint_ReturnsNotFound()
+    {
+        var client = _factory.CreateClient();           
+
+        var response = await client.GetAsync("/api/v1/orders/0");                     
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
 }
