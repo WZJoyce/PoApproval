@@ -1,4 +1,6 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 using PoApproval.Domain.Configuration;
 using PoApproval.Domain.Services;
 
@@ -44,4 +46,41 @@ internal static class ServiceCollectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddOpenApiServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddOptions<OpenApiOptions>()
+            .Bind(configuration.GetSection(OpenApiOptions.SectionName));
+
+        services.AddOpenApi("v1", options =>
+        {
+            options.AddDocumentTransformer((document, context, _) =>
+            {
+                var settings = configuration
+                    .GetSection(OpenApiOptions.SectionName)
+                    .Get<OpenApiOptions>() ?? new OpenApiOptions();
+
+                document.Info = new OpenApiInfo
+                {
+                    Title = settings.Title,
+                    Version = "v1",
+                    Description = settings.Description,
+                    Contact = new OpenApiContact
+                    {
+                        Name = settings.Contact.Name,
+                        Url = string.IsNullOrWhiteSpace(settings.Contact.Url)
+                            ? null
+                            : new Uri(settings.Contact.Url)
+                    }
+                };
+
+                return Task.CompletedTask;
+            });
+        });
+
+        return services;
+    }
+
 }
