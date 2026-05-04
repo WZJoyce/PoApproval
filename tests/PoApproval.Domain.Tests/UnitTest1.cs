@@ -1,4 +1,4 @@
-﻿namespace PoApproval.Domain.Tests;
+namespace PoApproval.Domain.Tests;
 
 public class UnitTest1
 {

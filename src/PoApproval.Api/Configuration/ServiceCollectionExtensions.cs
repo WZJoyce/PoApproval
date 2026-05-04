@@ -1,6 +1,5 @@
 using Asp.Versioning;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using PoApproval.Domain.Configuration;
 using PoApproval.Domain.Services;
 

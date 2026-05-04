@@ -27,7 +27,7 @@ public sealed class ApprovalSettings
     /// </summary>
     [Range(1, 500)]
     public int RejectionReasonMinLength { get; init; } = 10;
-    
+
     /// <summary>
     /// Maximum length of a rejection reason in characters.
     /// </summary>
