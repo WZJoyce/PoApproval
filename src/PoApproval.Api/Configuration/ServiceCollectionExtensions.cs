@@ -20,6 +20,7 @@ internal static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.AddSingleton<IClock, SystemClock>();
+        services.AddScoped<IApprovalService, ApprovalService>();
 
         return services;
     }
