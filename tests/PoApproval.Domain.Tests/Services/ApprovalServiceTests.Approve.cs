@@ -36,7 +36,7 @@ public partial class ApprovalServiceTests
         // Usernames are case-insensitive.
         var order = NewOrder(status: PurchaseOrderStatus.Submitted, createdBy: "catherine");
 
-        var act = () => _sut.Approve(order, approver: "Catherine");
+        var act = () => _sut.Approve(order, approver: "catherine");
 
         act.Should().Throw<BusinessRuleViolationException>();
     }

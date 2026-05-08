@@ -46,7 +46,6 @@ public partial class ApprovalServiceTests
     [Theory]
     [InlineData(PurchaseOrderStatus.Submitted)]
     [InlineData(PurchaseOrderStatus.Approved)]
-    [InlineData(PurchaseOrderStatus.Rejected)]
     public void Submit_FromNonDraftStatus_ThrowsInvalidStateTransition(PurchaseOrderStatus current)
     {
         var order = NewOrder(status: current);
@@ -74,5 +73,21 @@ public partial class ApprovalServiceTests
         order.ApprovedBy.Should().BeNull();
         order.ApprovedAt.Should().BeNull();
         order.RejectionReason.Should().BeNull();
+    }
+
+    [Fact]
+    public void Submit_FromRejected_ResubmitsAndClearsRejectionFields()
+    {
+        var order = NewOrder(status: PurchaseOrderStatus.Rejected, createdBy: "alice");
+        order.RejectionReason = "Budget exceeded for this month.";
+        order.ApprovedBy = "catherine";
+        order.ApprovedAt = _now.AddHours(-1);
+
+        _sut.Submit(order);
+
+        order.Status.Should().Be(PurchaseOrderStatus.Submitted);
+        order.RejectionReason.Should().BeNull();
+        order.ApprovedBy.Should().BeNull();
+        order.ApprovedAt.Should().BeNull();
     }
 }
