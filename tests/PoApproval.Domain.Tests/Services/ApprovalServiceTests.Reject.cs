@@ -16,8 +16,8 @@ public partial class ApprovalServiceTests
         _sut.Reject(order, approver: "catherine", reason: _validRejectionReason);
 
         order.Status.Should().Be(PurchaseOrderStatus.Rejected);
-        order.ApprovedBy.Should().Be("catherine");
-        order.ApprovedAt.Should().Be(_now);
+        order.ReviewedBy.Should().Be("catherine");
+        order.ReviewedAt.Should().Be(_now);
         order.RejectionReason.Should().Be(_validRejectionReason);
     }
 

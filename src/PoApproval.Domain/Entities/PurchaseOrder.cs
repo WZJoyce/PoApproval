@@ -19,9 +19,9 @@ public sealed class PurchaseOrder
 
     public PurchaseOrderStatus Status { get; set; }
 
-    public string? ApprovedBy { get; set; }
+    public string? ReviewedBy { get; set; }
 
-    public DateTime? ApprovedAt { get; set; }
+    public DateTime? ReviewedAt { get; set; }
 
     public string? RejectionReason { get; set; }
 

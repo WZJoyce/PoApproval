@@ -14,8 +14,8 @@ public partial class ApprovalServiceTests
         _sut.Approve(order, approver: "bob");
 
         order.Status.Should().Be(PurchaseOrderStatus.Approved);
-        order.ApprovedBy.Should().Be("bob");
-        order.ApprovedAt.Should().Be(_now);
+        order.ReviewedBy.Should().Be("bob");
+        order.ReviewedAt.Should().Be(_now);
     }
 
     [Fact]

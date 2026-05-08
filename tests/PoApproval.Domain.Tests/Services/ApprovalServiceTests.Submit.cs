@@ -70,8 +70,8 @@ public partial class ApprovalServiceTests
 
         order.CreatedBy.Should().Be(originalCreatedBy);
         order.Amount.Should().Be(originalAmount);
-        order.ApprovedBy.Should().BeNull();
-        order.ApprovedAt.Should().BeNull();
+        order.ReviewedBy.Should().BeNull();
+        order.ReviewedAt.Should().BeNull();
         order.RejectionReason.Should().BeNull();
     }
 
@@ -80,14 +80,14 @@ public partial class ApprovalServiceTests
     {
         var order = NewOrder(status: PurchaseOrderStatus.Rejected, createdBy: "alice");
         order.RejectionReason = "Budget exceeded for this month.";
-        order.ApprovedBy = "catherine";
-        order.ApprovedAt = _now.AddHours(-1);
+        order.ReviewedBy = "catherine";
+        order.ReviewedAt = _now.AddHours(-1);
 
         _sut.Submit(order);
 
         order.Status.Should().Be(PurchaseOrderStatus.Submitted);
         order.RejectionReason.Should().BeNull();
-        order.ApprovedBy.Should().BeNull();
-        order.ApprovedAt.Should().BeNull();
+        order.ReviewedBy.Should().BeNull();
+        order.ReviewedAt.Should().BeNull();
     }
 }

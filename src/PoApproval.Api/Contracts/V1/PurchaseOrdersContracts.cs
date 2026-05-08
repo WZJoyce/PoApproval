@@ -24,8 +24,8 @@ public sealed record PurchaseOrderDetails(
     PurchaseOrderStatus Status,
     string CreatedBy,
     DateTime CreatedAt,
-    string? ApprovedBy,
-    DateTime? ApprovedAt,
+    string? ReviewedBy,
+    DateTime? ReviewedAt,
     string? RejectionReason);
 
 /// <summary>

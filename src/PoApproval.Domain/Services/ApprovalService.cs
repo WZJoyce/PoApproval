@@ -36,8 +36,8 @@ public sealed class ApprovalService : IApprovalService
         EnsureNotSelApproval(order, approver);
 
         order.Status = PurchaseOrderStatus.Approved;
-        order.ApprovedBy = approver;
-        order.ApprovedAt = _clock.UtcNow;
+        order.ReviewedBy = approver;
+        order.ReviewedAt = _clock.UtcNow;
     }
 
     public void Reject(PurchaseOrder order, string approver, string reason)
@@ -47,8 +47,8 @@ public sealed class ApprovalService : IApprovalService
         EnsureCurrentStatus(order, PurchaseOrderStatus.Submitted, PurchaseOrderStatus.Rejected);
 
         order.Status = PurchaseOrderStatus.Rejected;
-        order.ApprovedBy = approver;
-        order.ApprovedAt = _clock.UtcNow;
+        order.ReviewedBy = approver;
+        order.ReviewedAt = _clock.UtcNow;
         order.RejectionReason = reason.Trim();
     }
 
@@ -99,8 +99,8 @@ public sealed class ApprovalService : IApprovalService
 
     private static void ClearReviewMetadata(PurchaseOrder order)
     {
-        order.ApprovedBy = null;
-        order.ApprovedAt = null;
+        order.ReviewedBy = null;
+        order.ReviewedAt = null;
         order.RejectionReason = null;
     }
 
