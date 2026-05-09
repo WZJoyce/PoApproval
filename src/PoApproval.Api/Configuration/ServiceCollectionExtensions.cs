@@ -1,7 +1,9 @@
 using Asp.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PoApproval.Domain.Configuration;
 using PoApproval.Domain.Services;
+using PoApproval.Infrastructure.Persistence;
 
 namespace PoApproval.Api.Configuration;
 
@@ -21,6 +23,29 @@ internal static class ServiceCollectionExtensions
 
         services.AddSingleton<IClock, SystemClock>();
         services.AddScoped<IApprovalService, ApprovalService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddPersistenceServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Default")
+            ?? throw new InvalidOperationException(
+                "Connection string 'Default' not found.");
+
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorNumbersToAdd: null);
+            });
+        });
 
         return services;
     }
