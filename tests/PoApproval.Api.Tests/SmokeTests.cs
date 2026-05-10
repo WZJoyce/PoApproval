@@ -24,16 +24,6 @@ public class SmokeTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task OrdersEndpoint_ReturnsNotImplemented()
-    {
-        var client = _factory.CreateClient();
-
-        var response = await client.GetAsync("/api/v1/orders");
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotImplemented);
-    }
-
-    [Fact]
     public async Task GetOrderbyId_WithInvalidIdContraint_ReturnsNotFound()
     {
         var client = _factory.CreateClient();

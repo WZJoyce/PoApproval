@@ -2,8 +2,12 @@ using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PoApproval.Domain.Configuration;
+using PoApproval.Domain.Repositories;
 using PoApproval.Domain.Services;
 using PoApproval.Infrastructure.Persistence;
+using PoApproval.Infrastructure.Persistence.Repositories;
+
+
 
 namespace PoApproval.Api.Configuration;
 
@@ -23,6 +27,7 @@ internal static class ServiceCollectionExtensions
 
         services.AddSingleton<IClock, SystemClock>();
         services.AddScoped<IApprovalService, ApprovalService>();
+        services.AddScoped<IOrderCreationService, OrderCreationService>();
 
         return services;
     }
@@ -46,6 +51,9 @@ internal static class ServiceCollectionExtensions
                     errorNumbersToAdd: null);
             });
         });
+
+        services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
