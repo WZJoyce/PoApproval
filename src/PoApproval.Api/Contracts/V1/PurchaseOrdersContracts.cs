@@ -54,3 +54,14 @@ public sealed record RejectPurchaseOrderRequest(
 
     [Required, StringLength(500, MinimumLength = 10)]
     string Reason);
+
+/// <summary>
+/// paged response wrapper for list endpoints, containing pagination metadata and a list of items.
+/// </summary>
+public sealed record PagedResponse<T>(
+    IReadOnlyList<T> Items,
+    int Page,
+    int PageSize,
+    int TotalCount,
+    int TotalPages,
+    bool HasMore);

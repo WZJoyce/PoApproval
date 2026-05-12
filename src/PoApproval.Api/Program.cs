@@ -15,8 +15,10 @@ builder.Services.AddOpenApiServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseExceptionHandler();
-app.UseStatusCodePages();
+app.UseMiddleware<PoApproval.Api.Middleware.DomainExceptionMiddleware>();
+//app.UseExceptionHandler();
+//app.UseStatusCodePages();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

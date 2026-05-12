@@ -26,8 +26,15 @@ internal static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.AddSingleton<IClock, SystemClock>();
+
+        //Domain services
         services.AddScoped<IApprovalService, ApprovalService>();
+
+        //Application services       
         services.AddScoped<IOrderCreationService, OrderCreationService>();
+        services.AddScoped<IOrderQueryService, OrderQueryService>();
+        services.AddScoped<IOrderTransitionService, OrderTransitionService>();
+
 
         return services;
     }

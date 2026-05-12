@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PoApproval.Domain.Entities;
+using PoApproval.Domain.Enums;
 using PoApproval.Domain.Repositories;
 
 namespace PoApproval.Infrastructure.Persistence.Repositories;
@@ -23,11 +24,25 @@ public sealed class PurchaseOrderRepository : IPurchaseOrderRepository
     {
         await _db.PurchaseOrders.AddAsync(order, cancellationToken);
     }
-    public async Task<IReadOnlyList<PurchaseOrder>> ListAsync(CancellationToken cancellationToken = default)
+    public async Task<PagedResult<PurchaseOrder>> ListAsync(PurchaseOrderStatus? statusFilter,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
     {
-        return await _db.PurchaseOrders
-            .AsNoTracking()
-            .OrderByDescending(po => po.CreatedAt)
+        var query = _db.PurchaseOrders.AsNoTracking();
+
+        if (statusFilter.HasValue)
+        {
+            query = query.Where(o => o.Status == statusFilter.Value);
+        }
+
+        var totalItems = await query.CountAsync(cancellationToken);
+        var items = await query
+            .OrderByDescending(o => o.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return new PagedResult<PurchaseOrder>(items, page, pageSize, totalItems);
     }
 }
