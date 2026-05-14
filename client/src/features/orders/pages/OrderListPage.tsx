@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { ApiError } from '@/lib/apiClient';
-import { useOrders } from '../hooks/useOrders';
-import { PurchaseOrderStatus, StatusLabel } from '../types';
+import { useState } from "react";
+import { ApiError } from "@/lib/apiClient";
+import { useOrders } from "../hooks/useOrders";
+import { PurchaseOrderStatus, StatusLabel } from "../types";
 
 export function OrderListPage() {
-  const [statusFilter, setStatusFilter] = useState<PurchaseOrderStatus | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<
+    PurchaseOrderStatus | undefined
+  >(undefined);
 
   const { data, isLoading, error, refetch } = useOrders({
     status: statusFilter,
@@ -13,19 +15,19 @@ export function OrderListPage() {
   });
 
   return (
-    <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
       <h1>Purchase Orders</h1>
 
       <div style={{ marginBottom: 16 }}>
         <label htmlFor="status-filter">Filter by status:&nbsp;</label>
         <select
           id="status-filter"
-          value={statusFilter ?? ''}
+          value={statusFilter ?? ""}
           onChange={(e) =>
             setStatusFilter(
-              e.target.value === ''
+              e.target.value === ""
                 ? undefined
-                : (Number(e.target.value) as PurchaseOrderStatus)
+                : (Number(e.target.value) as PurchaseOrderStatus),
             )
           }
         >
@@ -44,12 +46,12 @@ export function OrderListPage() {
       {isLoading && <p>Loading orders…</p>}
 
       {error && (
-        <div style={{ color: 'crimson' }}>
+        <div style={{ color: "crimson" }}>
           <p>Failed to load orders.</p>
           <p>
             {error instanceof ApiError
               ? `${error.status}: ${error.message}`
-              : 'Unknown error'}
+              : "Unknown error"}
           </p>
         </div>
       )}
@@ -58,12 +60,12 @@ export function OrderListPage() {
 
       {data && data.items.length > 0 && (
         <>
-          <p style={{ color: '#666' }}>
+          <p style={{ color: "#666" }}>
             Showing {data.items.length} of {data.totalCount} orders
           </p>
-          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid #333', textAlign: 'left' }}>
+              <tr style={{ borderBottom: "2px solid #333", textAlign: "left" }}>
                 <th style={{ padding: 8 }}>Order No</th>
                 <th style={{ padding: 8 }}>Amount</th>
                 <th style={{ padding: 8 }}>Status</th>
@@ -73,7 +75,7 @@ export function OrderListPage() {
             </thead>
             <tbody>
               {data.items.map((order) => (
-                <tr key={order.id} style={{ borderBottom: '1px solid #ddd' }}>
+                <tr key={order.id} style={{ borderBottom: "1px solid #ddd" }}>
                   <td style={{ padding: 8 }}>{order.orderNo}</td>
                   <td style={{ padding: 8 }}>${order.amount.toFixed(2)}</td>
                   <td style={{ padding: 8 }}>{StatusLabel[order.status]}</td>

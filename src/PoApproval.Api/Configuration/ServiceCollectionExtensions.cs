@@ -124,19 +124,19 @@ internal static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddCorsServices(this IServiceCollection services)
-{
-    services.AddCors(options =>
     {
-        options.AddDefaultPolicy(policy =>
+        services.AddCors(options =>
         {
-            policy
-                .WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            options.AddDefaultPolicy(policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
         });
-    });
 
-    return services;
-}
+        return services;
+    }
 
 }

@@ -1,4 +1,4 @@
-import { OrderListPage } from '@/features/orders';
+import { OrderListPage } from "@/features/orders";
 
 function App() {
   return <OrderListPage />;
