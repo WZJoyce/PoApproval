@@ -12,12 +12,11 @@ builder.Services.AddDomainServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddApiVersioningServices();
 builder.Services.AddOpenApiServices(builder.Configuration);
+builder.Services.AddCorsServices();
 
 var app = builder.Build();
 
 app.UseMiddleware<PoApproval.Api.Middleware.DomainExceptionMiddleware>();
-//app.UseExceptionHandler();
-//app.UseStatusCodePages();
 
 
 // Configure the HTTP request pipeline.
@@ -31,7 +30,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+app.UseCors();  
 app.UseAuthorization();
 app.MapControllers();
 
