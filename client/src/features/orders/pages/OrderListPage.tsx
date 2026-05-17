@@ -1,94 +1,151 @@
-import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ApiError } from "@/lib/apiClient";
 import { useOrders } from "../hooks/useOrders";
-import { PurchaseOrderStatus, StatusLabel } from "../types";
+import { PurchaseOrderStatus } from "../types";
+import { StatusBadge } from "../components/StatusBadge";
+
+const ALL_STATUSES = "all";
 
 export function OrderListPage() {
-  const [statusFilter, setStatusFilter] = useState<
-    PurchaseOrderStatus | undefined
-  >(undefined);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { data, isLoading, error, refetch } = useOrders({
+  const statusParam = searchParams.get("status");
+  const statusFilter = statusParam
+    ? (Number(statusParam) as PurchaseOrderStatus)
+    : undefined;
+
+  const { data, isLoading, error, refetch, isFetching } = useOrders({
     status: statusFilter,
     page: 1,
     pageSize: 50,
   });
 
+  const handleStatusChange = (value: string) => {
+    if (value === ALL_STATUSES) {
+      searchParams.delete("status");
+    } else {
+      searchParams.set("status", value);
+    }
+    setSearchParams(searchParams);
+  };
+
   return (
-    <div style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
-      <h1>Purchase Orders</h1>
-
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="status-filter">Filter by status:&nbsp;</label>
-        <select
-          id="status-filter"
-          value={statusFilter ?? ""}
-          onChange={(e) =>
-            setStatusFilter(
-              e.target.value === ""
-                ? undefined
-                : (Number(e.target.value) as PurchaseOrderStatus),
-            )
-          }
-        >
-          <option value="">All</option>
-          <option value={PurchaseOrderStatus.Draft}>Draft</option>
-          <option value={PurchaseOrderStatus.Submitted}>Submitted</option>
-          <option value={PurchaseOrderStatus.Approved}>Approved</option>
-          <option value={PurchaseOrderStatus.Rejected}>Rejected</option>
-        </select>
-
-        <button onClick={() => refetch()} style={{ marginLeft: 12 }}>
-          Refresh
-        </button>
-      </div>
-
-      {isLoading && <p>Loading orders…</p>}
-
-      {error && (
-        <div style={{ color: "crimson" }}>
-          <p>Failed to load orders.</p>
-          <p>
-            {error instanceof ApiError
-              ? `${error.status}: ${error.message}`
-              : "Unknown error"}
-          </p>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between gap-4">
+        <CardTitle>Purchase Orders</CardTitle>
+        <div className="flex items-center gap-3">
+          <Select
+            value={
+              statusFilter !== undefined ? String(statusFilter) : ALL_STATUSES
+            }
+            onValueChange={handleStatusChange}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_STATUSES}>All</SelectItem>
+              <SelectItem value={String(PurchaseOrderStatus.Draft)}>
+                Draft
+              </SelectItem>
+              <SelectItem value={String(PurchaseOrderStatus.Submitted)}>
+                Submitted
+              </SelectItem>
+              <SelectItem value={String(PurchaseOrderStatus.Approved)}>
+                Approved
+              </SelectItem>
+              <SelectItem value={String(PurchaseOrderStatus.Rejected)}>
+                Rejected
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
+            {isFetching ? "Refreshing…" : "Refresh"}
+          </Button>
         </div>
-      )}
+      </CardHeader>
+      <CardContent>
+        {isLoading && <p className="text-muted-foreground">Loading orders…</p>}
 
-      {data && data.items.length === 0 && <p>No orders found.</p>}
+        {error && (
+          <div className="rounded-md border border-danger/30 bg-danger/10 p-4 text-sm">
+            <p className="font-medium text-danger">Failed to load orders.</p>
+            <p className="mt-1 text-muted-foreground">
+              {error instanceof ApiError
+                ? `${error.status}: ${error.message}`
+                : "Unknown error"}
+            </p>
+          </div>
+        )}
 
-      {data && data.items.length > 0 && (
-        <>
-          <p style={{ color: "#666" }}>
-            Showing {data.items.length} of {data.totalCount} orders
+        {data && data.items.length === 0 && (
+          <p className="py-8 text-center text-muted-foreground">
+            No orders found.
           </p>
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <thead>
-              <tr style={{ borderBottom: "2px solid #333", textAlign: "left" }}>
-                <th style={{ padding: 8 }}>Order No</th>
-                <th style={{ padding: 8 }}>Amount</th>
-                <th style={{ padding: 8 }}>Status</th>
-                <th style={{ padding: 8 }}>Created By</th>
-                <th style={{ padding: 8 }}>Created At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.items.map((order) => (
-                <tr key={order.id} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td style={{ padding: 8 }}>{order.orderNo}</td>
-                  <td style={{ padding: 8 }}>${order.amount.toFixed(2)}</td>
-                  <td style={{ padding: 8 }}>{StatusLabel[order.status]}</td>
-                  <td style={{ padding: 8 }}>{order.createdBy}</td>
-                  <td style={{ padding: 8 }}>
-                    {new Date(order.createdAt).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-    </div>
+        )}
+
+        {data && data.items.length > 0 && (
+          <>
+            <p className="mb-3 text-sm text-muted-foreground">
+              Showing {data.items.length} of {data.totalCount} orders
+            </p>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order No</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Created By</TableHead>
+                  <TableHead>Created At</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.items.map((order) => (
+                  <TableRow key={order.id} className="cursor-pointer">
+                    <TableCell>
+                      <Link
+                        to={`/orders/${order.id}`}
+                        className="font-medium text-primary hover:underline"
+                      >
+                        {order.orderNo}
+                      </Link>
+                    </TableCell>
+                    <TableCell>${order.amount.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={order.status} />
+                    </TableCell>
+                    <TableCell>{order.createdBy}</TableCell>
+                    <TableCell>
+                      {new Date(order.createdAt).toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }

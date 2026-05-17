@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/apiClient";
 import type {
   PagedResponse,
+  PurchaseOrderDetails,
   PurchaseOrderSummary,
   PurchaseOrderStatus,
 } from "../types";
@@ -18,6 +19,13 @@ export const ordersApi = {
     const { data } = await apiClient.get<PagedResponse<PurchaseOrderSummary>>(
       "/api/v1/orders",
       { params },
+    );
+    return data;
+  },
+
+  getById: async (id: number): Promise<PurchaseOrderDetails> => {
+    const { data } = await apiClient.get<PurchaseOrderDetails>(
+      `/api/v1/orders/${id}`,
     );
     return data;
   },
