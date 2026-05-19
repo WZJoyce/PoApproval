@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ordersApi, type ListOrdersParams } from "../api/ordersApi";
 
 export const ordersQueryKeys = {
@@ -22,5 +22,51 @@ export function useOrder(id: number) {
     queryKey: ordersQueryKeys.detail(id),
     queryFn: () => ordersApi.getById(id),
     enabled: id > 0,
+  });
+}
+
+/**
+ * Invalidates all order-related queries so list and detail views
+ * refetch the latest state after a successful transition.
+ */
+function useInvalidateOrders() {
+  const queryClient = useQueryClient();
+  return (id: number) => {
+    queryClient.invalidateQueries({ queryKey: ordersQueryKeys.lists() });
+    queryClient.invalidateQueries({ queryKey: ordersQueryKeys.detail(id) });
+  };
+}
+
+export function useSubmitOrder() {
+  const invalidate = useInvalidateOrders();
+  return useMutation({
+    mutationFn: ({ id, actingUser }: { id: number; actingUser: string }) =>
+      ordersApi.submit(id, actingUser),
+    onSuccess: (_data, { id }) => invalidate(id),
+  });
+}
+
+export function useApproveOrder() {
+  const invalidate = useInvalidateOrders();
+  return useMutation({
+    mutationFn: ({ id, actingUser }: { id: number; actingUser: string }) =>
+      ordersApi.approve(id, actingUser),
+    onSuccess: (_data, { id }) => invalidate(id),
+  });
+}
+
+export function useRejectOrder() {
+  const invalidate = useInvalidateOrders();
+  return useMutation({
+    mutationFn: ({
+      id,
+      actingUser,
+      reason,
+    }: {
+      id: number;
+      actingUser: string;
+      reason: string;
+    }) => ordersApi.reject(id, actingUser, reason),
+    onSuccess: (_data, { id }) => invalidate(id),
   });
 }

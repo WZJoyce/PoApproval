@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 import { OrderListPage } from "@/features/orders/pages/OrderListPage";
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage";
 
@@ -18,6 +19,7 @@ function App() {
           </Routes>
         </main>
       </div>
+      <Toaster richColors position="top-right" />
     </BrowserRouter>
   );
 }

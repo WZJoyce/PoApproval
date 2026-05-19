@@ -29,4 +29,41 @@ export const ordersApi = {
     );
     return data;
   },
+
+  submit: async (
+    id: number,
+    actingUser: string,
+  ): Promise<PurchaseOrderDetails> => {
+    const { data } = await apiClient.post<PurchaseOrderDetails>(
+      `/api/v1/orders/${id}/submit`,
+      null,
+      { headers: { "User-Id": actingUser } },
+    );
+    return data;
+  },
+
+  approve: async (
+    id: number,
+    actingUser: string,
+  ): Promise<PurchaseOrderDetails> => {
+    const { data } = await apiClient.post<PurchaseOrderDetails>(
+      `/api/v1/orders/${id}/approve`,
+      { approver: actingUser },
+      { headers: { "User-Id": actingUser } },
+    );
+    return data;
+  },
+
+  reject: async (
+    id: number,
+    actingUser: string,
+    reason: string,
+  ): Promise<PurchaseOrderDetails> => {
+    const { data } = await apiClient.post<PurchaseOrderDetails>(
+      `/api/v1/orders/${id}/reject`,
+      { approver: actingUser, reason },
+      { headers: { "User-Id": actingUser } },
+    );
+    return data;
+  },
 };
