@@ -8,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ApiError } from "@/lib/apiClient";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 import { AVAILABLE_USERS, useActingUser } from "@/features/auth/actingUser";
 import { useOrder } from "../hooks/useOrders";
 import { StatusBadge } from "../components/StatusBadge";
@@ -54,18 +55,9 @@ export function OrderDetailPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {isLoading && <p className="text-muted-foreground">Loading order…</p>}
+          {isLoading && <LoadingState message="Loading orders..." />}
 
-          {error && (
-            <div className="rounded-md border border-danger/30 bg-danger/10 p-4 text-sm">
-              <p className="font-medium text-danger">Failed to load order.</p>
-              <p className="mt-1 text-muted-foreground">
-                {error instanceof ApiError
-                  ? `${error.status}: ${error.message}`
-                  : "Unknown error"}
-              </p>
-            </div>
-          )}
+          {error && <ErrorState error={error} title="Failed to load orders" />}
 
           {data && (
             <>

@@ -16,7 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ApiError } from "@/lib/apiClient";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
+import { EmptyState } from "@/shared/components/EmptyState";
 import { useOrders } from "../hooks/useOrders";
 import { PurchaseOrderStatus } from "../types";
 import { StatusBadge } from "../components/StatusBadge";
@@ -86,23 +88,12 @@ export function OrderListPage() {
         </div>
       </CardHeader>
       <CardContent>
-        {isLoading && <p className="text-muted-foreground">Loading orders…</p>}
+        {isLoading && <LoadingState message="Loading orders..." />}
 
-        {error && (
-          <div className="rounded-md border border-danger/30 bg-danger/10 p-4 text-sm">
-            <p className="font-medium text-danger">Failed to load orders.</p>
-            <p className="mt-1 text-muted-foreground">
-              {error instanceof ApiError
-                ? `${error.status}: ${error.message}`
-                : "Unknown error"}
-            </p>
-          </div>
-        )}
+        {error && <ErrorState error={error} title="Failed to load orders" />}
 
         {data && data.items.length === 0 && (
-          <p className="py-8 text-center text-muted-foreground">
-            No orders found.
-          </p>
+          <EmptyState message="No orders found." />
         )}
 
         {data && data.items.length > 0 && (

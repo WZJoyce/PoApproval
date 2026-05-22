@@ -1,9 +1,9 @@
 import axios, { AxiosError } from "axios";
-import type { ProblemDetails } from "@/features/orders/types";
+import type { ProblemDetails } from "@/shared/types/problemDetails";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-if (!baseURL) {
+if (!baseURL && import.meta.env.MODE !== "test") {
   throw new Error("VITE_API_URL is not defined. Check your .env file.");
 }
 
