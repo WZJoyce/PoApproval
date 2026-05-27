@@ -12,6 +12,11 @@ export interface ListOrdersParams {
   pageSize?: number;
 }
 
+export interface CreateOrderPayload {
+  orderNo: string;
+  amount: number;
+}
+
 export const ordersApi = {
   list: async (
     params: ListOrdersParams = {},
@@ -26,6 +31,18 @@ export const ordersApi = {
   getById: async (id: number): Promise<PurchaseOrderDetails> => {
     const { data } = await apiClient.get<PurchaseOrderDetails>(
       `/api/v1/orders/${id}`,
+    );
+    return data;
+  },
+
+  create: async (
+    payload: CreateOrderPayload,
+    actingUser: string,
+  ): Promise<PurchaseOrderDetails> => {
+    const { data } = await apiClient.post<PurchaseOrderDetails>(
+      "/api/v1/orders",
+      payload,
+      { headers: { "User-Id": actingUser } },
     );
     return data;
   },

@@ -1,5 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ordersApi, type ListOrdersParams } from "../api/ordersApi";
+import {
+  ordersApi,
+  type ListOrdersParams,
+  type CreateOrderPayload,
+} from "../api/ordersApi";
 
 export const ordersQueryKeys = {
   all: ["orders"] as const,
@@ -31,10 +35,25 @@ export function useOrder(id: number) {
  */
 function useInvalidateOrders() {
   const queryClient = useQueryClient();
-  return (id: number) => {
+  return (id?: number) => {
     queryClient.invalidateQueries({ queryKey: ordersQueryKeys.lists() });
-    queryClient.invalidateQueries({ queryKey: ordersQueryKeys.detail(id) });
+    if (id !== undefined)
+      queryClient.invalidateQueries({ queryKey: ordersQueryKeys.detail(id) });
   };
+}
+
+export function useCreateOrder() {
+  const invalidate = useInvalidateOrders();
+  return useMutation({
+    mutationFn: ({
+      payload,
+      actingUser,
+    }: {
+      payload: CreateOrderPayload;
+      actingUser: string;
+    }) => ordersApi.create(payload, actingUser),
+    onSuccess: () => invalidate(),
+  });
 }
 
 export function useSubmitOrder() {

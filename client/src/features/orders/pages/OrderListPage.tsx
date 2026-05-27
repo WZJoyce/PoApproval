@@ -22,6 +22,7 @@ import { EmptyState } from "@/shared/components/EmptyState";
 import { useOrders } from "../hooks/useOrders";
 import { PurchaseOrderStatus } from "../types";
 import { StatusBadge } from "../components/StatusBadge";
+import { CreateOrderDialog } from "../components/CreateOrderDialog";
 
 const ALL_STATUSES = "all";
 
@@ -85,6 +86,7 @@ export function OrderListPage() {
           >
             {isFetching ? "Refreshing…" : "Refresh"}
           </Button>
+          <CreateOrderDialog />
         </div>
       </CardHeader>
       <CardContent>
