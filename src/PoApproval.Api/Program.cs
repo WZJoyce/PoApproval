@@ -13,6 +13,7 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddApiVersioningServices();
 builder.Services.AddOpenApiServices(builder.Configuration);
 builder.Services.AddCorsServices();
+builder.Services.AddAdvisoryServices(builder.Configuration);
 
 var app = builder.Build();
 

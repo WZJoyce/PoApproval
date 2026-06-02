@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PoApproval.Domain.Advisory;
 using PoApproval.Domain.Entities;
 using PoApproval.Domain.Enums;
 using PoApproval.Domain.Repositories;
@@ -44,5 +45,37 @@ public sealed class PurchaseOrderRepository : IPurchaseOrderRepository
             .ToListAsync(cancellationToken);
 
         return new PagedResult<PurchaseOrder>(items, page, pageSize, totalItems);
+    }
+
+    public async Task<RequesterHistory> GetRequesterHistoryAsync(
+    string requester,
+    int excludeOrderId,
+    CancellationToken cancellationToken = default)
+    {
+        var orders = await _db.PurchaseOrders
+            .AsNoTracking()
+            .Where(o => o.CreatedBy == requester && o.Id != excludeOrderId)
+            .ToListAsync(cancellationToken);
+
+        if (orders.Count == 0)
+        {
+            return new RequesterHistory
+            {
+                Requester = requester,
+                TotalOrders = 0,
+                AverageAmount = 0,
+                MaxAmount = 0,
+                RejectedCount = 0,
+            };
+        }
+
+        return new RequesterHistory
+        {
+            Requester = requester,
+            TotalOrders = orders.Count,
+            AverageAmount = orders.Average(o => o.Amount),
+            MaxAmount = orders.Max(o => o.Amount),
+            RejectedCount = orders.Count(o => o.Status == PurchaseOrderStatus.Rejected),
+        };
     }
 }

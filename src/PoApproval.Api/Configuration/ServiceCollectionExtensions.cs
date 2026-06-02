@@ -1,9 +1,12 @@
 using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using PoApproval.Api.Services;
+using PoApproval.Domain.Advisory;
 using PoApproval.Domain.Configuration;
 using PoApproval.Domain.Repositories;
 using PoApproval.Domain.Services;
+using PoApproval.Infrastructure.Advisory;
 using PoApproval.Infrastructure.Persistence;
 using PoApproval.Infrastructure.Persistence.Repositories;
 
@@ -135,6 +138,19 @@ internal static class ServiceCollectionExtensions
                     .AllowAnyMethod();
             });
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAdvisoryServices(
+    this IServiceCollection services,
+    IConfiguration configuration)
+    {
+        services.Configure<AzureOpenAIOptions>(
+            configuration.GetSection(AzureOpenAIOptions.SectionName));
+
+        services.AddScoped<IApprovalAdvisor, AzureOpenAIApprovalAdvisor>();
+        services.AddScoped<OrderRecommendationService>();
 
         return services;
     }

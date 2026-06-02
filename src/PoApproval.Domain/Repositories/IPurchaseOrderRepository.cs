@@ -1,3 +1,4 @@
+using PoApproval.Domain.Advisory;
 using PoApproval.Domain.Entities;
 using PoApproval.Domain.Enums;
 
@@ -15,4 +16,6 @@ public interface IPurchaseOrderRepository
     Task AddAsync(PurchaseOrder order, CancellationToken cancellationToken = default);
 
     Task<PagedResult<PurchaseOrder>> ListAsync(PurchaseOrderStatus? statusFilter, int page, int pageSize, CancellationToken cancellationToken = default);
+
+    Task<RequesterHistory> GetRequesterHistoryAsync(string requester, int excludeOrderId, CancellationToken cancellationToken = default);
 }

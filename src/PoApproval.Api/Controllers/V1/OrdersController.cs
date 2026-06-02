@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using PoApproval.Api.Contracts.V1;
+using PoApproval.Api.Services;
+using PoApproval.Domain.Advisory;
 using PoApproval.Domain.Entities;
 using PoApproval.Domain.Enums;
 using PoApproval.Domain.Services;
@@ -129,6 +131,8 @@ public sealed class OrdersController : ControllerBase
         return Ok(ToDetails(order));
     }
 
+
+
     private static PurchaseOrderSummary ToSummary(PurchaseOrder order)
         => new(order.Id, order.OrderNo, order.Amount, order.Status, order.CreatedBy, order.CreatedAt);
 
@@ -143,4 +147,18 @@ public sealed class OrdersController : ControllerBase
             order.ReviewedBy,
             order.ReviewedAt,
             order.RejectionReason);
+
+    [HttpGet("{id:int}/ai-recommendation")]
+    [ProducesResponseType(typeof(AdvisorRecommendation), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<AdvisorRecommendation>> GetAiRecommendation(
+        [FromRoute] int id,
+        [FromServices] OrderRecommendationService recommendationService,
+        CancellationToken cancellationToken)
+    {
+        var recommendation = await recommendationService.GetRecommendationAsync(id, cancellationToken);
+        return Ok(recommendation);
+    }
+
+
 }
