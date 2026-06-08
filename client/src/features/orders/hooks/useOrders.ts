@@ -89,3 +89,14 @@ export function useRejectOrder() {
     onSuccess: (_data, { id }) => invalidate(id),
   });
 }
+
+export function useAIRecommendation(orderId: number) {
+  return useQuery({
+    queryKey: [...ordersQueryKeys.detail(orderId), "ai-recommendation"],
+    queryFn: () => ordersApi.getAiRecommendation(orderId),
+    enabled: false, // lazy — only fires when refetch() is called
+    staleTime: 5 * 60 * 1000, // cache AI result 5 min (don't re-call on remount)
+    gcTime: 10 * 60 * 1000,
+    retry: false, // AI failures shouldn't auto-retry (costly + slow)
+  });
+}

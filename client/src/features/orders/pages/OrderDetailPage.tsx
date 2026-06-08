@@ -14,6 +14,8 @@ import { AVAILABLE_USERS, useActingUser } from "@/features/auth/actingUser";
 import { useOrder } from "../hooks/useOrders";
 import { StatusBadge } from "../components/StatusBadge";
 import { OrderActions } from "../components/OrderActions";
+import { AIRecommendationCard } from "../components/AIRecommendationCard";
+import { PurchaseOrderStatus } from "../types";
 
 export function OrderDetailPage() {
   const { id: idParam } = useParams<{ id: string }>();
@@ -101,7 +103,11 @@ export function OrderDetailPage() {
                   </div>
                 )}
               </dl>
-
+              {data.status === PurchaseOrderStatus.Submitted && (
+                <div className="border-t border-border pt-6">
+                  <AIRecommendationCard orderId={data.id} />
+                </div>
+              )}
               <div className="border-t border-border pt-6">
                 <OrderActions order={data} />
               </div>

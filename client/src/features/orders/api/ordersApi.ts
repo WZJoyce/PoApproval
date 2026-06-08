@@ -5,6 +5,7 @@ import type {
   PurchaseOrderSummary,
   PurchaseOrderStatus,
 } from "../types";
+import type { AdvisorRecommendation } from "../aiTypes";
 
 export interface ListOrdersParams {
   status?: PurchaseOrderStatus;
@@ -80,6 +81,13 @@ export const ordersApi = {
       `/api/v1/orders/${id}/reject`,
       { approver: actingUser, reason },
       { headers: { "User-Id": actingUser } },
+    );
+    return data;
+  },
+
+  getAiRecommendation: async (id: number): Promise<AdvisorRecommendation> => {
+    const { data } = await apiClient.get<AdvisorRecommendation>(
+      `/api/v1/orders/${id}/ai-recommendation`,
     );
     return data;
   },
