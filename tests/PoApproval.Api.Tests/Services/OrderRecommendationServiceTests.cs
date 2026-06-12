@@ -1,11 +1,11 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PoApproval.Api.Services;
 using PoApproval.Domain.Advisory;
 using PoApproval.Domain.Entities;
 using PoApproval.Domain.Exceptions;
 using PoApproval.Domain.Repositories;
-using Xunit;
 
 public class OrderRecommendationServiceTests
 {
@@ -40,7 +40,8 @@ public class OrderRecommendationServiceTests
                 QuestionsForReviewer = [],
             });
 
-        var service = new OrderRecommendationService(repo.Object, advisor.Object);
+        var logger = new Mock<ILogger<OrderRecommendationService>>();
+        var service = new OrderRecommendationService(repo.Object, advisor.Object, logger.Object);
 
         var result = await service.GetRecommendationAsync(1);
 
@@ -57,7 +58,9 @@ public class OrderRecommendationServiceTests
             .ReturnsAsync((PurchaseOrder?)null);
 
         var advisor = new Mock<IApprovalAdvisor>();
-        var service = new OrderRecommendationService(repo.Object, advisor.Object);
+        var logger = new Mock<ILogger<OrderRecommendationService>>();
+
+        var service = new OrderRecommendationService(repo.Object, advisor.Object, logger.Object);
 
         var act = () => service.GetRecommendationAsync(99);
 
