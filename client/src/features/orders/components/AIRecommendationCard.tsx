@@ -1,28 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAIRecommendation } from "../hooks/useOrders";
-import type { AdvisorVerdict, AdvisorSeverity } from "../aiTypes";
+import { AdvisorVerdict, VerdictLabel } from "../aiTypes";
+import { AdvisorSeverity, SeverityLabel } from "../aiTypes";
 
 interface AIRecommendationCardProps {
   orderId: number;
 }
 
 const verdictStyles: Record<AdvisorVerdict, string> = {
-  LikelyApprove: "bg-success/20 text-success-foreground",
-  ReviewCarefully: "bg-warning/20 text-warning-foreground",
-  Investigate: "bg-danger/20 text-danger-foreground",
-};
-
-const verdictLabels: Record<AdvisorVerdict, string> = {
-  LikelyApprove: "Likely Approve",
-  ReviewCarefully: "Review Carefully",
-  Investigate: "Investigate",
+  [AdvisorVerdict.LikelyApprove]: "bg-success/20 text-success-foreground",
+  [AdvisorVerdict.ReviewCarefully]: "bg-danger/20 text-danger-foreground",
+  [AdvisorVerdict.Investigate]: "bg-danger/20 text-danger-foreground",
 };
 
 const severityStyles: Record<AdvisorSeverity, string> = {
-  Low: "border-border text-muted-foreground",
-  Medium: "border-warning/50 text-warning-foreground",
-  High: "border-danger/50 text-danger",
+  [AdvisorSeverity.Low]: "border-border text-muted-foreground",
+  [AdvisorSeverity.Medium]: "border-warning/50 text-warning-foreground",
+  [AdvisorSeverity.High]: "border-danger/50 text-danger",
 };
 
 export function AIRecommendationCard({ orderId }: AIRecommendationCardProps) {
@@ -95,7 +90,7 @@ export function AIRecommendationCard({ orderId }: AIRecommendationCardProps) {
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm font-medium">AI Approval Advisor</p>
         <Badge variant="outline" className={verdictStyles[data.verdict]}>
-          {verdictLabels[data.verdict]}
+          {VerdictLabel[data.verdict]}
         </Badge>
       </div>
 
@@ -125,7 +120,9 @@ export function AIRecommendationCard({ orderId }: AIRecommendationCardProps) {
               className={`rounded-md border px-3 py-2 text-sm ${severityStyles[flag.severity]}`}
             >
               <span className="font-medium">{flag.type}</span>
-              <span className="ml-2 text-xs uppercase">({flag.severity})</span>
+              <span className="ml-2 text-xs uppercase">
+                ({SeverityLabel[flag.severity]})
+              </span>
               <p className="mt-1 text-muted-foreground">{flag.detail}</p>
             </div>
           ))}
