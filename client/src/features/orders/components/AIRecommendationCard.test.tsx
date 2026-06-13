@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { AdvisorVerdict, AdvisorSeverity } from '../aiTypes';
 
 vi.mock("../hooks/useOrders", () => ({
   useAIRecommendation: vi.fn(),
@@ -61,7 +62,7 @@ describe("AIRecommendationCard", () => {
     vi.mocked(useAIRecommendation).mockReturnValue(
       mockHook({
         data: {
-          verdict: "ReviewCarefully",
+          verdict: AdvisorVerdict.ReviewCarefully,
           confidence: 0,
           summary: "unavailable",
           flags: [],
@@ -80,11 +81,11 @@ describe("AIRecommendationCard", () => {
     vi.mocked(useAIRecommendation).mockReturnValue(
       mockHook({
         data: {
-          verdict: "Investigate",
+          verdict: AdvisorVerdict.Investigate,
           confidence: 0.75,
           summary: "Amount is unusually high.",
           flags: [
-            { type: "AMOUNT_OUTLIER", severity: "High", detail: "33x average" },
+            { type: "AMOUNT_OUTLIER", severity: AdvisorSeverity.High, detail: "33x average" },
           ],
           questionsForReviewer: ["Is this a one-time expense?"],
           isAvailable: true,
