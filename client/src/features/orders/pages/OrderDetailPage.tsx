@@ -1,16 +1,10 @@
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { LoadingState } from "@/shared/components/LoadingState";
 import { ErrorState } from "@/shared/components/ErrorState";
-import { AVAILABLE_USERS, useActingUser } from "@/features/auth/actingUser";
+
 import { useOrder } from "../hooks/useOrders";
 import { StatusBadge } from "../components/StatusBadge";
 import { OrderActions } from "../components/OrderActions";
@@ -22,7 +16,6 @@ export function OrderDetailPage() {
   const id = Number(idParam);
 
   const { data, isLoading, error } = useOrder(id);
-  const { actingUser, setActingUser } = useActingUser();
 
   return (
     <div className="space-y-4">
@@ -30,23 +23,6 @@ export function OrderDetailPage() {
         <Button variant="outline" size="sm" asChild>
           <Link to="/">← Back to list</Link>
         </Button>
-
-        {/* Pre-auth temporary user switcher. Replaced by JWT identity in Week 4. */}
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Acting as:</span>
-          <Select value={actingUser} onValueChange={setActingUser}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {AVAILABLE_USERS.map((user) => (
-                <SelectItem key={user} value={user}>
-                  {user}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
       </div>
 
       <Card>
